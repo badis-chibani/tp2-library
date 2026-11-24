@@ -26,7 +26,6 @@ public class Library {
 
     // Add a copy of a book
     public void addCopy(String isbn, String inventoryNumber) {
-
         Book book = null;
 
         for (Book b : books) {
@@ -50,7 +49,6 @@ public class Library {
 
     // Find a copy by inventory number
     public Copy findCopy(String inventoryNumber) {
-
         for (Copy copy : copies) {
             if (copy.getInventoryNumber().equals(inventoryNumber)) {
                 return copy;
@@ -98,7 +96,6 @@ public class Library {
         }
 
         Loan loan = new Loan(member, copy, today);
-
         loans.add(loan);
         copy.setAvailable(false);
 
@@ -107,7 +104,6 @@ public class Library {
 
     // Return a copy
     public void returnCopy(String inventoryNumber, LocalDate today) {
-
         Copy copy = findCopy(inventoryNumber);
 
         if (copy.isAvailable()) {
@@ -123,5 +119,19 @@ public class Library {
         }
 
         throw new IllegalStateException("No active loan found");
+    }
+
+    // Search books by title
+    public List<Book> searchByTitle(String keyword) {
+        List<Book> results = new ArrayList<>();
+
+        for (Book book : books) {
+            if (book.getTitle().toLowerCase()
+                    .contains(keyword.toLowerCase())) {
+                results.add(book);
+            }
+        }
+
+        return results;
     }
 }

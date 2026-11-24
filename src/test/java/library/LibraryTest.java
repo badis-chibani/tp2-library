@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 class LibraryTest {
 
     private static final String ISBN = "978-0-00-000001-1";
+
     private static final LocalDate DAY =
             LocalDate.of(2026, 10, 1);
 
@@ -31,17 +32,14 @@ class LibraryTest {
 
     @Test
     void lendingMakesTheCopyUnavailable() {
-
         Loan loan = library.lend("M-01", "C-001", DAY);
 
         assertFalse(library.findCopy("C-001").isAvailable());
-
         assertEquals(DAY.plusDays(14), loan.getDueDate());
     }
 
     @Test
     void cannotLendAnUnavailableCopy() {
-
         library.lend("M-01", "C-001", DAY);
 
         assertThrows(IllegalStateException.class,
@@ -50,7 +48,6 @@ class LibraryTest {
 
     @Test
     void memberCannotHaveMoreThanFiveActiveLoans() {
-
         for (int i = 1; i <= 6; i++) {
             library.addCopy(ISBN, "C-00" + i);
         }
@@ -65,21 +62,18 @@ class LibraryTest {
 
     @Test
     void unknownMemberIsRejected() {
-
         assertThrows(IllegalArgumentException.class,
                 () -> library.lend("M-99", "C-001", DAY));
     }
 
     @Test
     void unknownCopyIsRejected() {
-
         assertThrows(IllegalArgumentException.class,
                 () -> library.lend("M-01", "C-999", DAY));
     }
 
     @Test
     void returningCopyMakesItAvailableAgain() {
-
         library.lend("M-01", "C-001", DAY);
 
         library.returnCopy("C-001", DAY.plusDays(5));
@@ -89,13 +83,20 @@ class LibraryTest {
 
     @Test
     void loanCanBeOpenAndLate() {
-
         Loan loan = library.lend("M-01", "C-001", DAY);
 
         assertTrue(loan.isOpen());
-
         assertTrue(loan.isLate(DAY.plusDays(15)));
-
         assertFalse(loan.isLate(DAY.plusDays(10)));
+    }
+
+    // Search books by title, ignoring uppercase and lowercase
+    @Test
+    void searchByTitleIgnoresCase() {
+        assertEquals(1, library.searchByTitle("software").size());
+
+        assertEquals(1, library.searchByTitle("SOFTWARE").size());
+
+        assertEquals(0, library.searchByTitle("Python").size());
     }
 }
